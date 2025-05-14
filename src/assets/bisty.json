@@ -1,0 +1,24 @@
+{
+  "frames": {
+    "bisty-idle": {
+      "frame": {"x": 377, "y": 2, "w": 109, "h": 184}
+    },
+    "bisty-run1": {
+      "frame": {"x": 124, "y": 0, "w": 124, "h": 188}
+    },
+    "bisty-run2": {
+      "frame": {"x": 250, "y": 4, "w": 126, "h": 184}
+    },
+    "bisty-jump": {
+      "frame": {"x": 0, "y": 0, "w": 124, "h": 197}
+    },
+    "bisty-dead": {
+      "frame": {"x": 488, "y": 15, "w": 122, "h": 171}
+    }
+  },
+  "meta": {
+    "image": "bisty.png",
+    "format": "RGBA8888",
+    "size": {"w": 600, "h": 300}
+  }
+} 

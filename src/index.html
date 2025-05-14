@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bisty's Sahara Fantasy Journey</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      /* background-color: rgb(243, 243, 243); */
+      background: linear-gradient(
+        to bottom,
+        #B7D6D4 0%,     /* 天空蓝 */
+        #D6E7C4 30%,     /* 绿洲浅绿 */
+        #A3C87E 45%,     /* 绿洲草绿 */
+        #E9C27B 70%,     /* 沙地黄 */
+        #C77E39 100%     /* 深沙棕 */
+      );
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      /* background-image: url('assets/bg7.png');
+      background-size: cover;
+      background-position: center; */
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+    }
+    
+    /* 游戏容器及两侧的头像样式 */
+    .game-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      flex-grow: 1;
+    }
+    
+    #game-container {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .avatar-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+    
+    .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      background-color: #f0f0f0;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    
+    .avatar:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* 添加小图标标识Twitter */
+    /* .avatar::after {
+      content: '';
+      position: absolute;
+      bottom: 3px;
+      right: 3px;
+      width: 16px;
+      height: 16px;
+      background-image: url('https://abs.twimg.com/responsive-web/client-web/icon-svg.168b89d5.svg');
+      background-size: cover;
+      background-color: white;
+      border-radius: 50%;
+    } */
+    
+    /* 作者信息样式 */
+    .author-info {
+      padding: 10px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .author-info .author-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .author-info .author-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .author-info a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #333;
+      transition: color 0.3s ease;
+    }
+    
+    .author-info a:hover {
+      color: #1D9BF0;
+    }
+    
+    .author-info .x-logo {
+      height: 16px;
+      margin-left: 5px;
+    }
+    
+    @media (max-width: 1200px) {
+      .avatar {
+        width: 50px;
+        height: 50px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .avatar-container {
+        display: none; /* 在移动设备上隐藏头像 */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrapper">
+    <!-- 左侧头像 -->
+    <div class="avatar-container left-avatars">
+      <a href="https://twitter.com/SaharaLabsAI" target="_blank" class="avatar">
+        <img src="assets/avatars/SaharaLabsAI.jpg" alt="Sahara Labs" title="Sahara Labs">
+      </a>
+      <a href="https://x.com/tz_sahara" target="_blank" class="avatar">
+        <img src="assets/avatars/tz_sahara.jpg" alt="tz_sahara" title="tz_sahara">
+      </a>
+      <a href="https://x.com/0x_xFeLix" target="_blank" class="avatar">
+        <img src="assets/avatars/0x_xFeLix.webp" alt="0x_xFeLix" title="0x_xFeLix">
+      </a>
+      <a href="https://x.com/XaraaWeb3" target="_blank" class="avatar">
+        <img src="assets/avatars/XaraaWeb3.webp" alt="Xaraa | Syrnik| XDWU🇨🇭" title="Xaraa | Syrnik| XDWU🇨🇭">
+      </a>
+      <a href="https://x.com/imlct" target="_blank" class="avatar">
+        <img src="assets/avatars/imlct.webp" alt="蓝鸟/bluebird 🖍 ˢʸʳⁿⁱᵏ" title="蓝鸟/bluebird 🖍 ˢʸʳⁿⁱᵏ">
+      </a>
+      <a href="https://x.com/JayKryptoX" target="_blank" class="avatar">
+        <img src="assets/avatars/JayKryptoX.webp" alt="JayKryptoX" title="JayKryptoX">
+      </a>
+    </div>
+    
+    <!-- 游戏容器 -->
+    <div id="game-container"></div>
+    
+    <!-- 右侧头像 -->
+    <div class="avatar-container right-avatars">
+      <a href="https://x.com/1BY1_UA" target="_blank" class="avatar">
+        <img src="assets/avatars/1BY1_UA.webp" alt="1BY1_UA" title="1BY1_UA">
+      </a>
+      <a href="https://x.com/CryptoAlexK" target="_blank" class="avatar">
+        <img src="assets/avatars/CryptoAlexK.webp" alt="CryptoAlexK" title="CryptoAlexK">
+      </a>
+      <a href="https://x.com/heavy2984" target="_blank" class="avatar">
+        <img src="assets/avatars/heavy2984.webp" alt="heavy2984" title="heavy2984">
+      </a>
+      <a href="https://x.com/notdegenfr" target="_blank" class="avatar">
+        <img src="assets/avatars/notdegenfr.webp" alt="notdegenfr" title="notdegenfr">
+      </a>
+      <a href="https://x.com/kttaang" target="_blank" class="avatar">
+        <img src="assets/avatars/kttaang.webp" alt="kttaang" title="kttaang">
+      </a>
+      <a href="https://x.com/yoayoa76076" target="_blank" class="avatar">
+        <img src="assets/avatars/yoayoa76076.webp" alt="yoayoa76076" title="yoayoa76076">
+      </a>
+    </div>
+  </div>
+  
+  <!-- 作者信息 -->
+  <div class="author-info">
+    <div class="author-avatar">
+      <img src="assets/f.jpg" alt="Freshguy Avatar" title="Freshguy">
+    </div>
+    Made by Freshguy
+    <a href="https://x.com/pnl233" target="_blank">
+      <img src="assets/x-logo.svg" alt="X Logo" title="Follow on X" class="x-logo">
+    </a>
+  </div>
+  
+  <script>
+    // 检查头像图片加载错误并设置默认图片
+    document.querySelectorAll('.avatar img').forEach(img => {
+      img.onerror = function() {
+        this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" fill="%23ddd"/><text x="30" y="35" font-family="Arial" font-size="20" text-anchor="middle" fill="%23888">?</text></svg>';
+      };
+    });
+  </script>
+</body>
+</html>
