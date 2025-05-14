@@ -58,7 +58,7 @@ class RewardItem implements Reward {
     this.sprite.position.y = this.initialY + Math.sin(this.floatOffset) * this.floatAmplitude;
     
     // 轻微旋转效果
-    this.sprite.rotation += this.rotationSpeed * safeDelta;
+    // this.sprite.rotation += this.rotationSpeed * safeDelta;
   }
 
   public checkCollision(dinoSprite: PIXI.Sprite): boolean {
