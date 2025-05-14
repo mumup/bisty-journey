@@ -67,14 +67,14 @@ export class Bisty {
       this.isJumping = true;
       
       // 设置更强的初始跳跃速度
-      this.velocity = this.config.jumpVelocity * 1.1;
+      this.velocity = this.config.jumpVelocity;
       
       // 切换跳跃动画
       this.sprite.textures = [PIXI.Texture.from('bisty-jump')];
       this.sprite.gotoAndStop(0);
       
       // 直接应用位移，减少首帧延迟感
-      this.sprite.y += this.velocity * 2; 
+      // this.sprite.y += this.velocity * 2;
     }
   }
 
