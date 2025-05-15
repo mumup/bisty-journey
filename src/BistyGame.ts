@@ -51,6 +51,9 @@ export class BistyGame {
       antialias: true
     });
 
+    // 限制最高为60fps
+    this.app.ticker.maxFPS = 60
+
     this.gameContainer.appendChild(this.app.view as unknown as Node);
     
     // 设置音频上下文自动播放策略
