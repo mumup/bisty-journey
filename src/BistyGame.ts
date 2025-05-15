@@ -52,7 +52,7 @@ export class BistyGame {
     });
 
     // 限制最高为60fps
-    // this.app.ticker.maxFPS = 60
+    this.app.ticker.maxFPS = 60
 
     this.gameContainer.appendChild(this.app.view as unknown as Node);
     
