@@ -114,45 +114,16 @@ class RewardItem implements Reward {
     const originalScale = this.sprite.scale.x;
     const originalAlpha = this.sprite.alpha;
     
-    // 创建闪光效果
-    const flash = new PIXI.Graphics();
-    flash.beginFill(0xFFFF00, 0.7);
-    flash.drawCircle(0, 0, 30);
-    flash.endFill();
-    flash.position.copyFrom(this.sprite.position);
-    flash.scale.set(0.1);
-    flash.alpha = 1;
-    
-    // 确保闪光效果有唯一标识，便于后续移除
-    flash.name = `flash_${Date.now()}_${Math.random()}`;
-    
-    this.sprite.parent.addChild(flash);
-    
     // 动画计时
     let elapsed = 0;
     const animate = (delta: number) => {
       elapsed += delta;
       
       if (elapsed < 10) {
-        // 闪光效果
-        flash.scale.set(flash.scale.x + 0.15);
-        flash.alpha = Math.max(0, 1 - elapsed / 10);
-        
         // 物品动画
         this.sprite.scale.set(originalScale + elapsed * 0.05);
         this.sprite.alpha = Math.max(0, originalAlpha - elapsed / 10);
       } else {
-        // 完成动画，确保闪光效果完全移除
-        if (flash.parent) {
-          try {
-            flash.parent.removeChild(flash);
-            // 确保对象被销毁
-            flash.destroy({children: true});
-          } catch (e) {
-            console.error('移除闪光效果时出错:', e);
-          }
-        }
-        
         // 重置物品状态
         this.sprite.scale.set(originalScale);
         this.sprite.alpha = originalAlpha;
@@ -282,16 +253,9 @@ export class RewardManager {
       this.setNextSpawnTime();
       this.elapsedTime = 0;
     }
-    
-    // 定期清理可能残留的闪光效果（每5秒执行一次）
-    if (Math.floor(this.elapsedTime / 5000) > Math.floor((this.elapsedTime - deltaTime * 16.67) / 5000)) {
-      this.cleanupFlashEffects();
-    }
   }
 
   public checkCollisions(dinoSprite: PIXI.Sprite): void {
-    let hasCollision = false;
-    
     for (let i = this.rewards.length - 1; i >= 0; i--) {
       const reward = this.rewards[i];
       
@@ -300,8 +264,6 @@ export class RewardManager {
       
       // 检查是否碰撞
       if (reward.checkCollision(dinoSprite)) {
-        hasCollision = true;
-        
         // 触发收集回调
         this.onCollectCallback(reward.value);
         
@@ -314,14 +276,6 @@ export class RewardManager {
           this.removeReward(reward);
         });
       }
-    }
-    
-    // 如果有碰撞，执行额外的清理
-    if (hasCollision) {
-      // 延迟执行一次清理，确保所有闪光效果都被移除
-      setTimeout(() => {
-        this.cleanupFlashEffects();
-      }, 500);
     }
   }
 
@@ -341,9 +295,6 @@ export class RewardManager {
       }
     }
     this.rewards = [];
-    
-    // 清理可能残留的闪光效果
-    this.cleanupFlashEffects();
     
     // 重置状态
     this.elapsedTime = 0;
@@ -392,40 +343,6 @@ export class RewardManager {
     console.log(`下一个奖励物品将在 ${this.nextSpawnTime/1000} 秒后生成`);
   }
 
-  // 清理所有闪光效果
-  private cleanupFlashEffects(): void {
-    // 搜索所有容器中可能残留的闪光效果
-    this.cleanupFlashInContainer(this.rewardContainer);
-    this.cleanupFlashInContainer(this.stage);
-  }
-  
-  // 递归清理容器中的闪光效果
-  private cleanupFlashInContainer(container: PIXI.Container): void {
-    // 从后向前遍历，以便安全地移除子元素
-    for (let i = container.children.length - 1; i >= 0; i--) {
-      const child = container.children[i];
-      
-      // 检查是否是闪光效果（通过名称前缀）
-      if (child.name && child.name.startsWith('flash_')) {
-        console.log('移除残留的闪光效果:', child.name);
-        container.removeChild(child);
-        if ('destroy' in child) {
-          (child as any).destroy({children: true});
-        }
-      }
-      
-      // 递归检查子容器
-      if (child instanceof PIXI.Container && child.children.length > 0) {
-        this.cleanupFlashInContainer(child);
-      }
-    }
-  }
-
-  // 添加一个公共方法来获取调试信息
-  public getDebugInfo(): string {
-    return `运行状态:${this.running}, 累计时间:${Math.floor(this.elapsedTime)}ms, 下次生成:${Math.floor(this.nextSpawnTime)}ms, 当前物品数:${this.rewards.length}, 总生成数:${this.spawnCount}`;
-  }
-
   // 安全地移除奖励物品
   private removeReward(reward: RewardItem): void {
     // 检查物品是否仍在数组中
@@ -448,5 +365,10 @@ export class RewardManager {
         console.error('移除奖励物品时出错:', e);
       }
     }
+  }
+
+  // 添加一个公共方法来获取调试信息
+  public getDebugInfo(): string {
+    return `运行状态:${this.running}, 累计时间:${Math.floor(this.elapsedTime)}ms, 下次生成:${Math.floor(this.nextSpawnTime)}ms, 当前物品数:${this.rewards.length}, 总生成数:${this.spawnCount}`;
   }
 } 
