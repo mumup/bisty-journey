@@ -27,23 +27,23 @@ export class ScoreManager implements Score {
     this.loadHighScore();
     
     // 创建当前分数文本
-    this.text = new PIXI.Text('00000', {
+    this.text = new PIXI.Text('00000 Sahara Points', {
       fontFamily: 'Courier New',
       fontSize: 20,
       fontWeight: 'bold',
       fill: 0x000000
     });
-    this.text.position.set(this.config.width - 150, 20);
+    this.text.position.set(this.config.width - 250, 20);
     this.stage.addChild(this.text);
     
-    // 创建最高分文本
-    this.highScoreText = new PIXI.Text(`HI ${this.formatScore(this.highScore)}`, {
+    // 创建最高分文本 - 不包含Sahara Points
+    this.highScoreText = new PIXI.Text(`HI ${this.formatHighScore(this.highScore)}`, {
       fontFamily: 'Courier New',
       fontSize: 20,
       fontWeight: 'bold',
       fill: 0x555555
     });
-    this.highScoreText.position.set(this.config.width - 300, 20);
+    this.highScoreText.position.set(this.config.width - 360, 20);
     this.stage.addChild(this.highScoreText);
 
     // 创建奖励分数文本（初始不可见）
@@ -72,7 +72,7 @@ export class ScoreManager implements Score {
     if (this.value > this.highScore) {
       this.highScore = this.value;
       this.saveHighScore();
-      this.highScoreText.text = `HI ${this.formatScore(this.highScore)}`;
+      this.highScoreText.text = `HI ${this.formatHighScore(this.highScore)}`;
     }
   }
 
@@ -106,6 +106,10 @@ export class ScoreManager implements Score {
   }
 
   private formatScore(score: number): string {
+    return String(Math.floor(score)).padStart(5, '0') + ' Sahara Points';
+  }
+
+  private formatHighScore(score: number): string {
     return String(Math.floor(score)).padStart(5, '0');
   }
 
@@ -144,7 +148,7 @@ export class ScoreManager implements Score {
     // 设置文本内容和位置
     this.bonusText.text = `+${points}`;
     this.bonusText.position.set(
-      this.text.position.x - 60,
+      this.text.position.x,
       this.text.position.y
     );
     this.bonusText.alpha = 1;

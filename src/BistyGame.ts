@@ -338,7 +338,7 @@ export class BistyGame {
   private createMusicButton(): void {
     // 创建音乐按钮容器
     this.musicButton = new PIXI.Container();
-    this.musicButton.position.set(this.config.width - 50, 50);
+    this.musicButton.position.set(50, 50);
     this.musicButton.eventMode = 'static';
     this.musicButton.cursor = 'pointer';
     
@@ -478,7 +478,7 @@ export class BistyGame {
     titleText.position.set(0, -100);
     
     // 添加分数显示
-    const scoreText = new PIXI.Text('Score: 0', {
+    const scoreText = new PIXI.Text('Sahara Points: 0', {
       fontFamily: 'Arial',
       fontSize: 24,
       fill: 0xFFFFFF
@@ -558,7 +558,7 @@ export class BistyGame {
   private showGameOverModal(): void {
     // 更新分数显示
     const scoreText = this.gameOverModal.children[2] as PIXI.Text;
-    scoreText.text = `Score: ${Math.floor(this.scoreManager.value)}`;
+    scoreText.text = `Sahara Points: ${Math.floor(this.scoreManager.value)}`;
     
     // 显示弹框
     this.gameOverModal.visible = true;
