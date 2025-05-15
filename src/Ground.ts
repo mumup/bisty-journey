@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { GameConfig } from './types';
 
 export class Ground {
-  private sprites: PIXI.TilingSprite[] = [];
+  private ground!: PIXI.TilingSprite;
   private stage: PIXI.Container;
   private config: GameConfig;
   private resources: any;
@@ -20,45 +20,29 @@ export class Ground {
     // 创建地面精灵
     const groundTexture = PIXI.Texture.from('ground');
     
-    // 创建两个相邻的地面精灵以实现无缝滚动
-    const ground1 = new PIXI.TilingSprite(
+    // 使用TilingSprite创建一个可以无限平铺的地面
+    this.ground = new PIXI.TilingSprite(
       groundTexture,
-      this.config.width,
+      this.config.width + 10, // 添加一点额外宽度以避免缝隙
       groundTexture.height
     );
-    ground1.position.set(0, this.config.groundY);
-    
-    const ground2 = new PIXI.TilingSprite(
-      groundTexture,
-      this.config.width,
-      groundTexture.height
-    );
-    ground2.position.set(this.config.width, this.config.groundY);
-    
-    this.sprites.push(ground1, ground2);
+    this.ground.position.set(0, this.config.groundY);
     
     // 添加到舞台
-    this.stage.addChild(ground1, ground2);
+    this.stage.addChild(this.ground);
   }
 
   public update(deltaTime: number): void {
     // 更新地面速度
-    this.groundSpeed = this.config.speed;
+    // this.groundSpeed = this.config.speed;
     
-    // 更新地面位置
-    for (const sprite of this.sprites) {
-      sprite.position.x -= this.groundSpeed * deltaTime;
-      
-      // 如果地面移出屏幕，将其放置在另一个地面的右侧
-      if (sprite.position.x <= -this.config.width) {
-        sprite.position.x = this.config.width;
-      }
-    }
+    // 更新地面的tilePosition而不是position
+    // 这样可以实现无缝滚动而不会出现缝隙
+    // this.ground.tilePosition.x -= this.groundSpeed * deltaTime;
   }
 
   public reset(): void {
-    this.sprites[0].position.x = 0;
-    this.sprites[1].position.x = this.config.width;
+    this.ground.tilePosition.x = 0;
     this.groundSpeed = this.config.speed;
   }
 } 

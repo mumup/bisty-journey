@@ -86,6 +86,7 @@ export class BistyGame {
     PIXI.Assets.add({ alias: 'background', src: 'assets/background.jpg' })
     PIXI.Assets.add({ alias: 'bird1', src: 'assets/bird1.png' })
     PIXI.Assets.add({ alias: 'bird2', src: 'assets/bird2.png' })
+    PIXI.Assets.add({ alias: 'logo', src: 'assets/logo-white.png' })
 
     PIXI.Assets.add({ alias: 'cloud', src: 'assets/cloud.png' })
 
@@ -115,6 +116,7 @@ export class BistyGame {
         'coin',
         'star',
         'gem',
+        'logo',
         // 'bisty-run1',
         // 'bisty-run2'
       ]).then((resources) => {
@@ -190,6 +192,9 @@ export class BistyGame {
 
     // 创建游戏结束弹框
     this.createGameOverModal();
+    
+    // 添加logo到右上角
+    this.createLogo();
   }
 
   private createBackground(): void {
@@ -653,5 +658,27 @@ export class BistyGame {
     
     const rewardInfo = this.rewardManager.getDebugInfo();
     this.debugText.text = `FPS: ${Math.round(this.app.ticker.FPS)}\n${rewardInfo}`;
+  }
+
+  private createLogo(): void {
+    // 创建logo精灵
+    const logo = PIXI.Sprite.from('logo');
+    
+    // 设置logo尺寸
+    logo.width = 177;
+    logo.height = 19;
+    
+    // 设置logo位置在右上角
+    logo.position.set(this.config.width - logo.width - 20, 80);
+    
+    // 给logo设置最高的zIndex确保它在最上层
+    logo.zIndex = 1000;
+    
+    // 添加到舞台最顶层
+    this.app.stage.addChild(logo);
+    
+    // 确保stage支持sortableChildren并启用排序
+    this.app.stage.sortableChildren = true;
+    this.app.stage.sortChildren();
   }
 } 
